@@ -38,7 +38,7 @@ steps:
   displayName: 'JFrog CLI Publish Artifacts'
 
 - script: |
-    echo $JFROG_DOCKER_PASSWORD | docker login $JFROG_DOCKER_REGISTRY_URL -u $JFROG_DOCKER_USER --password-stdin
+    echo $JFROG_PASSWORD | docker login $JFROG_DOCKER_REGISTRY_URL -u $JFROG_USER --password-stdin
     docker build -t $JFROG_DOCKER_REGISTRY_URL/paymentapp:latest .
     docker push $JFROG_DOCKER_REGISTRY_URL/paymentapp:latest
   displayName: 'Build and Push Docker image to Artifactory'
