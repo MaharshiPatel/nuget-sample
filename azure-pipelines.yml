@@ -18,11 +18,11 @@ steps:
 
 - script: |
     curl -fL https://getcli.jfrog.io | sh
-    ./jfrog --version
+    ./jf -v
   displayName: 'Install JFrog CLI'
 
 - script: |
-    ./jfrog rt nuget restore PaymentApp/PaymentApp.csproj --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD --repo=$JFROG_NUGET_REPO
+    ./jf nuget restore PaymentApp/PaymentApp.csproj --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD --repo=$JFROG_NUGET_REPO
   displayName: 'JFrog CLI NuGet Restore'
 
 - script: |
@@ -34,7 +34,7 @@ steps:
   displayName: 'Publish project'
 
 - script: |
-    ./jfrog rt upload $(Build.ArtifactStagingDirectory) $JFROG_ARTIFACTORY_REPO_PATH --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD
+    ./jf rt upload $(Build.ArtifactStagingDirectory) $JFROG_ARTIFACTORY_REPO_PATH --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD
   displayName: 'JFrog CLI Publish Artifacts'
 
 - script: |
