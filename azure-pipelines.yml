@@ -16,30 +16,32 @@ steps:
     packageType: 'sdk'
     version: '6.0.x'
 
-- script: dotnet restore PaymentApp/PaymentApp.csproj
-  displayName: 'Restore NuGet packages'
+- script: |
+    curl -fL https://getcli.jfrog.io | sh
+    ./jfrog --version
+  displayName: 'Install JFrog CLI'
 
-- script: dotnet build PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration)
+- script: |
+    ./jfrog rt nuget restore PaymentApp/PaymentApp.csproj --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD --repo=$JFROG_NUGET_REPO
+  displayName: 'JFrog CLI NuGet Restore'
+
+- script: |
+    dotnet build PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration)
   displayName: 'Build project'
 
-- script: dotnet publish PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+- script: |
+    dotnet publish PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
   displayName: 'Publish project'
 
-- task: Docker@2
-  displayName: 'Build Docker image'
-  inputs:
-    command: build
-    repository: $(imageName)
-    dockerfile: Dockerfile
-    tags: latest
+- script: |
+    ./jfrog rt upload $(Build.ArtifactStagingDirectory) $JFROG_ARTIFACTORY_REPO_PATH --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD
+  displayName: 'JFrog CLI Publish Artifacts'
 
-- task: Docker@2
-  displayName: 'Push Docker image'
-  inputs:
-    command: push
-    repository: $(imageName)
-    tags: latest
-    containerRegistry: '<yourContainerRegistryServiceConnection>'
+- script: |
+    echo $JFROG_DOCKER_PASSWORD | docker login $JFROG_DOCKER_REGISTRY_URL -u $JFROG_DOCKER_USER --password-stdin
+    docker build -t $JFROG_DOCKER_REGISTRY_URL/paymentapp:latest .
+    docker push $JFROG_DOCKER_REGISTRY_URL/paymentapp:latest
+  displayName: 'Build and Push Docker image to Artifactory'
 
 - task: PublishBuildArtifacts@1
   inputs:
