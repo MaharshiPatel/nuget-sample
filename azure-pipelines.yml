@@ -17,11 +17,13 @@ steps:
     version: '6.0.x'
 
 - task: JfrogCliV2@1
+  displayName: 'Check JFrog Platform connection'
   inputs:
     jfrogPlatformConnection: 'soleng-maharship'
     command: 'jf rt ping'
 
 - task: JfrogCliV2@1
+  displayName: 'RUN: Nuget restore'
   inputs:
     jfrogPlatformConnection: 'soleng-maharship'
     command: 'jf nuget restore PaymentApp/PaymentApp.csproj --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD --repo=$JFROG_NUGET_REPO'
