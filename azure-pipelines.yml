@@ -21,6 +21,11 @@ steps:
     jfrogPlatformConnection: 'soleng-maharship'
     command: 'jf rt ping'
 
+- task: JfrogCliV2@1
+  inputs:
+    jfrogPlatformConnection: 'soleng-maharship'
+    command: 'jf nuget restore PaymentApp/PaymentApp.csproj --url=$JFROG_URL --user=$JFROG_USER --password=$JFROG_PASSWORD --repo=$JFROG_NUGET_REPO'
+
 - script: |
     dotnet build PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration)
   displayName: 'Build project'
