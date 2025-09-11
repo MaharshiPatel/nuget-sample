@@ -26,14 +26,13 @@ steps:
   displayName: 'Configure NuGet with JFrog'
   inputs:
     jfrogPlatformConnection: 'soleng-maharship'
-    command: 'jf nuget-config --repo-resolve=$(JFROG_NUGET_REPO)'
-
+    command: 'jf dotnet-config --repo-resolve=$(JFROG_NUGET_REPO)'
 
 - task: JfrogCliV2@1
   displayName: 'RUN: Nuget restore'
   inputs:
     jfrogPlatformConnection: 'soleng-maharship'
-    command: 'jf nuget restore PaymentApp/PaymentApp.csproj --repo=$(JFROG_NUGET_REPO)'
+    command: 'jf dotnet restore PaymentApp/PaymentApp.csproj --repo=$(JFROG_NUGET_REPO)'
 
 - script: |
     dotnet build PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration)
