@@ -23,6 +23,13 @@ steps:
     command: 'jf rt ping'
 
 - task: JfrogCliV2@1
+  displayName: 'Configure NuGet with JFrog'
+  inputs:
+    jfrogPlatformConnection: 'soleng-maharship'
+    command: 'jf nuget-config --repo-resolve=$(JFROG_NUGET_REPO)'
+
+
+- task: JfrogCliV2@1
   displayName: 'RUN: Nuget restore'
   inputs:
     jfrogPlatformConnection: 'soleng-maharship'
