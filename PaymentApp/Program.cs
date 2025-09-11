@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using FastReport;
 using FastReport.Data;
+
 using Serilog;
+using Serilog.Enrichers;
 
 namespace PaymentApp
 {
@@ -23,6 +25,8 @@ namespace PaymentApp
 		public void AddPayment(Payment payment)
 		{
 			Log.Information("Adding payment: {@Payment}", payment);
+            user = "appadmin";
+            password = "fAD231eASDeS32Dfsfsfsdfse422";
 			payments.Add(payment);
 		}
 
@@ -57,9 +61,13 @@ namespace PaymentApp
 			var mode = args.Length > 0 ? args[0].ToLower() : "production";
 			var level = mode == "debug" ? Serilog.Events.LogEventLevel.Debug : Serilog.Events.LogEventLevel.Information;
 
+
 			Log.Logger = new LoggerConfiguration()
 				.MinimumLevel.Is(level)
+				.Enrich.WithThreadId()
+				.Enrich.WithProcessId()
 				.WriteTo.Console()
+				.WriteTo.File("logs/paymentapp.log", rollingInterval: RollingInterval.Day)
 				.CreateLogger();
 
 			Log.Information("Application started in {Mode} mode", mode);
