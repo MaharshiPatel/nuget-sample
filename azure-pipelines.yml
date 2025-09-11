@@ -1,0 +1,48 @@
+# Azure Pipeline for PaymentApp
+
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  buildConfiguration: 'Release'
+  imageName: 'paymentapp'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'
+
+- script: dotnet restore PaymentApp/PaymentApp.csproj
+  displayName: 'Restore NuGet packages'
+
+- script: dotnet build PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration)
+  displayName: 'Build project'
+
+- script: dotnet publish PaymentApp/PaymentApp.csproj --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+  displayName: 'Publish project'
+
+- task: Docker@2
+  displayName: 'Build Docker image'
+  inputs:
+    command: build
+    repository: $(imageName)
+    dockerfile: Dockerfile
+    tags: latest
+
+- task: Docker@2
+  displayName: 'Push Docker image'
+  inputs:
+    command: push
+    repository: $(imageName)
+    tags: latest
+    containerRegistry: '<yourContainerRegistryServiceConnection>'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+    publishLocation: 'Container'

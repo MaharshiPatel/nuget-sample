@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/11/2025 00:00:00" ReportInfo.Modified="09/11/2025 00:00:00">
+  <Dictionary>
+    <TableDataSource Name="Payments" ReferenceName="Payments" DataType="System.Collections.Generic.List`1[[PaymentApp.Payment, PaymentApp]]" Enabled="true">
+      <Column Name="Id" DataType="System.Int32"/>
+      <Column Name="Payer" DataType="System.String"/>
+      <Column Name="Amount" DataType="System.Decimal"/>
+      <Column Name="Date" DataType="System.DateTime"/>
+    </TableDataSource>
+  </Dictionary>
+  <ReportPage Name="Page1">
+    <DataBand Name="Data1" DataSource="Payments">
+      <TextObject Name="Text1" Left="0" Top="0" Width="200" Height="20" Text="[Payments.Id]"/>
+      <TextObject Name="Text2" Left="200" Top="0" Width="200" Height="20" Text="[Payments.Payer]"/>
+      <TextObject Name="Text3" Left="400" Top="0" Width="200" Height="20" Text="[Payments.Amount]"/>
+      <TextObject Name="Text4" Left="600" Top="0" Width="200" Height="20" Text="[Payments.Date]"/>
+    </DataBand>
+  </ReportPage>
+</Report>
