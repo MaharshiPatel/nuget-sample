@@ -1,6 +1,6 @@
 # PaymentApp
 
-A sample .NET payment application with reporting using FastReport.OpenSource (2020.3.22), Serilog logging, and Docker containerization.
+A sample .NET payment application with reporting using FastReport.OpenSource (2020.3.22), **PDF invoice generation** using QuestPDF, Serilog logging, and Docker containerization.
 
 ## Prerequisites
 - [.NET SDK 6.0+](https://dotnet.microsoft.com/download)
@@ -27,6 +27,19 @@ A sample .NET payment application with reporting using FastReport.OpenSource (20
      ```sh
      dotnet run --project PaymentApp -- debug
      ```
+
+## Running unit tests
+
+The solution includes a test project `PaymentApp.Tests` (xUnit). Run all tests:
+
+```sh
+dotnet test PaymentApp.Tests
+```
+
+Tests cover:
+- **PaymentService** — add/get payments, initial empty list.
+- **InvoiceLineItem** — `Total` (unit price × quantity).
+- **InvoicePdfGenerator** — generates a non-empty PDF, supports comments and empty line items.
 
 ## Containerize with Docker
 
@@ -62,10 +75,22 @@ A sample .NET payment application with reporting using FastReport.OpenSource (20
      docker run --rm paymentapp debug
      ```
 
+## Invoice PDF generation
+
+The app includes a PDF invoice tool built with [QuestPDF](https://www.questpdf.com/). On each run it generates `Invoice.pdf` in the working directory with sample seller/customer addresses and line items.
+
+- **Models**: `PaymentApp/Models/Invoice.cs` — `InvoiceModel`, `InvoiceLineItem`, `InvoiceAddress`.
+- **Generator**: `PaymentApp/Services/InvoicePdfGenerator.cs` — call `Generate(invoice, "path/to/Invoice.pdf")` to create a PDF.
+- **Template**: `PaymentApp/Invoice/InvoiceDocument.cs` and `AddressComponent.cs` define the layout (header, addresses, line items table, total, comments).
+
+To generate a custom invoice from code, build an `InvoiceModel`, create an `InvoicePdfGenerator`, and call `Generate(invoice, outputPath)`.
+
 ## Notes
+
 - The report template file `PaymentReport.frx` must be present in the working directory.
 - Logging is handled by Serilog and can be set to production or debug mode.
 - FastReport.OpenSource 2020.3.22 is used for reporting.
+- QuestPDF is used for invoice PDFs (Community license for development/evaluation).
 
 ## License
 MIT

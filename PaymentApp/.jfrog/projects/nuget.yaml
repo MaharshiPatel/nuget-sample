@@ -1,0 +1,6 @@
+version: 1
+type: nuget
+resolver:
+    repo: alpha-nuget-virtual
+    serverId: rtsaas
+    nugetV2: true
